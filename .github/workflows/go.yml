@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
 
@@ -30,7 +31,7 @@ jobs:
     - name: Upload apple-music-alac-atmos-downloader
       uses: actions/upload-artifact@v4
       with:
-        name: apple-music-alac-atmos-downloader-windows
+        name: amdl-windows
         path: alac/*
 
   build-linux-amd64:
@@ -55,7 +56,7 @@ jobs:
     - name: Upload apple-music-alac-atmos-downloader
       uses: actions/upload-artifact@v4
       with:
-        name: apple-music-alac-atmos-downloader-linux
+        name: amdl-linux-amd64
         path: alac/*
 
   build-linux-arm64:
@@ -80,7 +81,7 @@ jobs:
     - name: Upload apple-music-alac-atmos-downloader
       uses: actions/upload-artifact@v4
       with:
-        name: apple-music-alac-atmos-downloader-linux
+        name: amdl-linux-arm64
         path: alac/*
 
   build-macos:
@@ -105,5 +106,5 @@ jobs:
     - name: Upload apple-music-alac-atmos-downloader
       uses: actions/upload-artifact@v4
       with:
-        name: apple-music-alac-atmos-downloader-macos
+        name: amdl-macos
         path: alac/*
