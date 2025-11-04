@@ -1794,7 +1794,9 @@ func main() {
 		}
 	}
 	var search_type string
+	var outputDir string
 	pflag.StringVar(&search_type, "search", "", "Search for 'album', 'song', or 'artist'. Provide query after flags.")
+	pflag.StringVarP(&outputDir, "output", "o", "", "Specify output directory for downloads")
 	pflag.BoolVar(&dl_atmos, "atmos", false, "Enable atmos download mode")
 	pflag.BoolVar(&dl_aac, "aac", false, "Enable adm-aac download mode")
 	pflag.BoolVar(&dl_select, "select", false, "Enable selective download")
@@ -1815,6 +1817,13 @@ func main() {
 	}
 
 	pflag.Parse()
+
+	if outputDir != "" {
+	    Config.AlacSaveFolder = outputDir
+	    Config.AtmosSaveFolder = outputDir
+	    Config.AacSaveFolder = outputDir
+	}
+	
 	Config.AlacMax = *alac_max
 	Config.AtmosMax = *atmos_max
 	Config.AacType = *aac_type
