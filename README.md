@@ -1,6 +1,6 @@
 # Apple Music ALAC / Dolby Atmos Downloader
 
-[English](./README.md) | [简体中文](./README-CN.md)
+[English](./README.md) | [简体中文](./README-CN.md) | [🌐 Cloud Server / Proxy Setup](./PROXY-SETUP.md)
 
 > **Original script by Sorrow.** Modified with fixes and improvements.
 
@@ -172,6 +172,19 @@ docker run --network host -v ./downloads:/downloads -v ./config.yaml:/app/config
 9. Copy the language value and paste it into `config.yaml`
 10. **Optional:** To disable pronunciation, remove the corresponding value in config.yaml: `...%5D=<remove_this_value>&extend...`
 11. Save and run the script as usual
+
+---
+
+## 🖥️ Running on a Cloud Server (DigitalOcean / VPS)?
+
+If you're getting `503 Service Unavailable`  on your server, Apple Music's API likely blocks your server's IP.
+
+➡️ **See the full fix guide: [PROXY-SETUP.md](./PROXY-SETUP.md)**
+
+Quick summary — add this to `config.yaml` after setting up [Cloudflare WARP](./PROXY-SETUP.md#2-option-a--cloudflare-warp-recommended) or an [SSH tunnel](./PROXY-SETUP.md#3-option-b--ssh-reverse-tunnel-zero-cost-no-install):
+```yaml
+proxy: "socks5://127.0.0.1:1080"
+```
 
 ---
 

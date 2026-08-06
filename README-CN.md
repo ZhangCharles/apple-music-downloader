@@ -1,6 +1,6 @@
 # Apple Music ALAC / 杜比全景声下载器
 
-[English](./README.md) | [简体中文](./README-CN.md)
+[English](./README.md) | [简体中文](./README-CN.md) | [🌐 云服务器/代理配置](./PROXY-SETUP.md)
 
 > **原脚本由 Sorrow 编写。** 本仓库已作修改，包含一些修复和改进。
 
@@ -172,6 +172,19 @@ docker run --network host -v ./downloads:/downloads -v ./config.yaml:/app/config
 9. 复制语言值并粘贴到 `config.yaml` 中
 10. **可选：** 如需禁用发音，在 config.yaml 中移除对应值：`...%5D=<remove_this_value>&extend...`
 11. 保存并照常运行脚本
+
+---
+
+## 🖥️ 在云服务器上运行？（DigitalOcean / VPS）
+
+如果你在服务器上遇到 `503 Service Unavailable` 或 `failed to get lyrics`，说明 Apple Music API 封锁了你服务器的 IP。
+
+➡️ **完整解决方案：[PROXY-SETUP.md](./PROXY-SETUP.md)**
+
+快速配置——安装 [Cloudflare WARP](./PROXY-SETUP.md#2-方案-a--cloudflare-warp推荐) 或使用 [SSH 隆道](./PROXY-SETUP.md#3-方案-b--ssh-反向隊道零成本无需安装)，然后在 `config.yaml` 中添加：
+```yaml
+proxy: "socks5://127.0.0.1:1080"
+```
 
 ---
 

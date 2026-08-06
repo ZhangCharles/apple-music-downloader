@@ -9,7 +9,11 @@
 !/go.sum
 !/main.go
 !/README.md
+!/PROXY-SETUP.md
 !/utils/
 !/utils/**
 !/cmd/
 !/cmd/**
+!/api_server.go
+!/api_tasks.go
+!API-usage.md

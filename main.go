@@ -22,6 +22,7 @@ import (
 
 	"main/utils/alacfix"
 	"main/utils/ampapi"
+	"main/utils/httputil"
 	"main/utils/lyrics"
 	"main/utils/runv2"
 	"main/utils/runv3"
@@ -46,6 +47,7 @@ var (
 	dl_song            bool
 	artist_select      bool
 	debug_mode         bool
+	enableAPI          bool
 	print_json         bool
 	save_m3u8_playlist bool
 	alac_max           *int
@@ -213,7 +215,7 @@ func getUrlArtistName(artistUrl string, token string) (string, string, error) {
 	query := url.Values{}
 	query.Set("l", Config.Language)
 	req.URL.RawQuery = query.Encode()
-	do, err := http.DefaultClient.Do(req)
+	do, err := httputil.Client.Do(req)
 	if err != nil {
 		return "", "", err
 	}
@@ -244,7 +246,7 @@ func checkArtist(artistUrl string, token string, relationship string) ([]string,
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 		req.Header.Set("Origin", "https://music.apple.com")
-		do, err := http.DefaultClient.Do(req)
+		do, err := httputil.Client.Do(req)
 		if err != nil {
 			return nil, err
 		}
@@ -391,7 +393,7 @@ func writeCover(sanAlbumFolder, name string, url string) (string, error) {
 		return "", err
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-	do, err := http.DefaultClient.Do(req)
+	do, err := httputil.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -410,7 +412,7 @@ func writeCover(sanAlbumFolder, name string, url string) (string, error) {
 				return "", err
 			}
 			req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-			do, err = http.DefaultClient.Do(req)
+			do, err = httputil.Client.Do(req)
 			if err != nil {
 				fmt.Println("Failed to get cover from fallback url.")
 				return "", err
@@ -1965,6 +1967,10 @@ func main() {
 		fmt.Printf("load Config failed: %v", err)
 		return
 	}
+	if err := httputil.Init(Config.Proxy); err != nil {
+		fmt.Printf("proxy config error: %v\n", err)
+		return
+	}
 	token, err := ampapi.GetToken()
 	if err != nil {
 		if Config.AuthorizationToken != "" && Config.AuthorizationToken != "your-authorization-token" {
@@ -1978,6 +1984,7 @@ func main() {
 	var outputDir string
 	pflag.StringVar(&search_type, "search", "", "Search for 'album', 'song', or 'artist'. Provide query after flags.")
 	pflag.StringVarP(&outputDir, "output", "o", "", "Specify output directory for downloads")
+	pflag.BoolVar(&enableAPI, "api", false, "Start HTTP API server on :18080 to accept download requests")
 	pflag.BoolVar(&dl_atmos, "atmos", false, "Enable atmos download mode")
 	pflag.BoolVar(&dl_aac, "aac", false, "Enable adm-aac download mode")
 	pflag.BoolVar(&dl_select, "select", false, "Enable selective download")
@@ -2002,11 +2009,11 @@ func main() {
 	pflag.Parse()
 
 	if outputDir != "" {
-	    Config.AlacSaveFolder = outputDir
-	    Config.AtmosSaveFolder = outputDir
-	    Config.AacSaveFolder = outputDir
+		Config.AlacSaveFolder = outputDir
+		Config.AtmosSaveFolder = outputDir
+		Config.AacSaveFolder = outputDir
 	}
-	
+
 	Config.AlacMax = *alac_max
 	Config.AtmosMax = *atmos_max
 	Config.AacType = *aac_type
@@ -2014,6 +2021,16 @@ func main() {
 	Config.MVMax = *mv_max
 
 	args := pflag.Args()
+
+	if enableAPI {
+		if len(args) == 0 {
+			// run API server in foreground when no URLs supplied
+			StartAPIServer(":18080")
+			return
+		}
+		// start API server in background and continue to process provided URLs
+		go StartAPIServer(":18080")
+	}
 
 	if search_type != "" {
 		if len(args) == 0 {

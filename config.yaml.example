@@ -81,3 +81,18 @@ convert-warn-lossy-to-lossless: true # If true, print a warning when converting 
 convert-skip-lossy-to-lossless: true # If true, skip converting detected lossy sources to lossless target formats (flac/wav)
 convert-check-bad-alac: false # If true, check and report if ALAC is damaged
 convert-delete-bad-alac: false # If true, delete if ALAC is damaged
+
+# ---------------------------------------------------------------------------
+# Proxy — Fix for Cloud Servers Blocked by Apple Music API
+# Errors fixed: "503 Service Unavailable" / "Failed to get song response." /
+#               "failed to get lyrics"
+# See full guide: PROXY-SETUP.md
+# ---------------------------------------------------------------------------
+#
+# Supported formats:
+#   proxy: ""                          # No proxy (default — local PC)
+#   proxy: "socks5://127.0.0.1:1080"  # SOCKS5 proxy (Cloudflare WARP / SSH tunnel)
+#   proxy: "http://127.0.0.1:3128"    # HTTP proxy
+#
+# ---------------------------------------------------------------------------
+proxy: ""

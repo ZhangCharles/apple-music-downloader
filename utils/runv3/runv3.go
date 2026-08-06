@@ -27,6 +27,8 @@ import (
 
 	"github.com/grafov/m3u8"
 	"github.com/schollz/progressbar/v3"
+
+	"main/utils/httputil"
 )
 
 type PlaybackLicense struct {
@@ -104,10 +106,10 @@ func AfterRequest(response *resty.Response) ([]byte, error) {
 
 func getPlaybackHeaders(authtoken string, mutoken string) map[string]string {
 	headers := map[string]string{
-		"User-Agent":         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-		"Origin":             "https://music.apple.com",
-		"Referer":            "https://music.apple.com/",
-		"Accept":             "application/vnd.apple.mpegurl,application/x-mpegURL,text/plain;q=0.8,*/*;q=0.5",
+		"User-Agent":          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+		"Origin":              "https://music.apple.com",
+		"Referer":             "https://music.apple.com/",
+		"Accept":              "application/vnd.apple.mpegurl,application/x-mpegURL,text/plain;q=0.8,*/*;q=0.5",
 		"X-Apple-Store-Front": "143441-1,25",
 	}
 	if mutoken != "" {
@@ -125,7 +127,7 @@ func getURLWithHeaders(url string, authtoken string, mutoken string) ([]byte, er
 	for key, value := range getPlaybackHeaders(authtoken, mutoken) {
 		req.Header.Set(key, value)
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httputil.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +161,7 @@ func GetWebplayback(adamId string, authtoken string, mutoken string, mvmode bool
 	req.Header.Set("x-apple-music-user-token", mutoken)
 	// 创建 HTTP 客户端
 	//client := &http.Client{}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httputil.Client.Do(req)
 	// 发送请求
 	//resp, err := client.Do(req)
 	if err != nil {
