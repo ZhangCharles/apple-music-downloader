@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+
+	"main/utils/httputil"
 )
 
 func GetToken() (string, error) {
@@ -12,7 +14,7 @@ func GetToken() (string, error) {
 		return "", err
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httputil.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -31,7 +33,7 @@ func GetToken() (string, error) {
 		return "", err
 	}
 
-	resp, err = http.DefaultClient.Do(req)
+	resp, err = httputil.Client.Do(req)
 	if err != nil {
 		return "", err
 	}

@@ -22,6 +22,7 @@ import (
 
 	"main/utils/alacfix"
 	"main/utils/ampapi"
+	"main/utils/httputil"
 	"main/utils/lyrics"
 	"main/utils/runv2"
 	"main/utils/runv3"
@@ -213,7 +214,7 @@ func getUrlArtistName(artistUrl string, token string) (string, string, error) {
 	query := url.Values{}
 	query.Set("l", Config.Language)
 	req.URL.RawQuery = query.Encode()
-	do, err := http.DefaultClient.Do(req)
+	do, err := httputil.Client.Do(req)
 	if err != nil {
 		return "", "", err
 	}
@@ -244,7 +245,7 @@ func checkArtist(artistUrl string, token string, relationship string) ([]string,
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 		req.Header.Set("Origin", "https://music.apple.com")
-		do, err := http.DefaultClient.Do(req)
+		do, err := httputil.Client.Do(req)
 		if err != nil {
 			return nil, err
 		}
@@ -391,7 +392,7 @@ func writeCover(sanAlbumFolder, name string, url string) (string, error) {
 		return "", err
 	}
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-	do, err := http.DefaultClient.Do(req)
+	do, err := httputil.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -410,7 +411,7 @@ func writeCover(sanAlbumFolder, name string, url string) (string, error) {
 				return "", err
 			}
 			req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-			do, err = http.DefaultClient.Do(req)
+			do, err = httputil.Client.Do(req)
 			if err != nil {
 				fmt.Println("Failed to get cover from fallback url.")
 				return "", err
@@ -1963,6 +1964,10 @@ func main() {
 	err := loadConfig()
 	if err != nil {
 		fmt.Printf("load Config failed: %v", err)
+		return
+	}
+	if err := httputil.Init(Config.Proxy); err != nil {
+		fmt.Printf("proxy config error: %v\n", err)
 		return
 	}
 	token, err := ampapi.GetToken()

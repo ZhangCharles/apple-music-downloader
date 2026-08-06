@@ -9,6 +9,7 @@
 !/go.sum
 !/main.go
 !/README.md
+!/PROXY-SETUP.md
 !/utils/
 !/utils/**
 !/cmd/

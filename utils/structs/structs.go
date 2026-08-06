@@ -54,6 +54,7 @@ type ConfigSet struct {
 	ConvertDeleteBadALAC       bool   `yaml:"convert-delete-bad-alac"`
 	ALACFix                    bool   `yaml:"alac-fix"`
 	ExitOnError                bool   `yaml:"exit-on-error"`
+	Proxy                      string `yaml:"proxy"`
 }
 
 type Counter struct {

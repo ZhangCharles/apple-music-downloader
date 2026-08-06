@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/beevik/etree"
+	"main/utils/httputil"
 )
 
 type SongLyrics struct {
@@ -60,7 +61,7 @@ func getSongLyrics(songId string, storefront string, token string, userToken str
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	cookie := http.Cookie{Name: "media-user-token", Value: userToken}
 	req.AddCookie(&cookie)
-	do, err := http.DefaultClient.Do(req)
+	do, err := httputil.Client.Do(req)
 	if err != nil {
 		return "", err
 	}

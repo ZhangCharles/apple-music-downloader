@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"main/utils/httputil"
 )
 
 func GetPlaylistResp(storefront string, id string, language string, token string) (*PlaylistResp, error) {
@@ -34,7 +36,7 @@ func GetPlaylistResp(storefront string, id string, language string, token string
 	query.Set("extend", "editorialVideo,extendedAssetUrls")
 	query.Set("l", language)
 	req.URL.RawQuery = query.Encode()
-	do, err := http.DefaultClient.Do(req)
+	do, err := httputil.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +64,7 @@ func GetPlaylistResp(storefront string, id string, language string, token string
 			query.Set("include", "artists")
 			query.Set("extend", "editorialVideo,extendedAssetUrls")
 			req.URL.RawQuery = query.Encode()
-			do, err := http.DefaultClient.Do(req)
+			do, err := httputil.Client.Do(req)
 			if err != nil {
 				return nil, err
 			}
